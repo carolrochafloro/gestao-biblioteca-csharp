@@ -12,9 +12,21 @@ internal class UserInterface
 
     public Biblioteca biblioteca = new Biblioteca();
 
+    public enum Opcoes
+    {
+        CadastrarUsuario = 1,
+        CadastrarLivro = 2,
+        EmprestarLivro = 3,
+        DevolverLivro = 4,
+        ListarUsuarios = 5,
+        ListarLivros = 6,
+        Sair = 0,
+    }
+
     public void ExibirMenu()
     {
-        int escolha = 1;
+        int escolha;
+        
         do
         {
             Console.WriteLine($"Seja bem vindo à {biblioteca.Nome}");
@@ -29,21 +41,21 @@ internal class UserInterface
 
             escolha = LerDados();
 
-            if (escolha != 1 && escolha != 2 && escolha != 3 && escolha != 4 && escolha != 5 && escolha != 6 && escolha != 0)
+            if (!Enum.IsDefined(typeof(Opcoes), escolha))
             {
                 Console.WriteLine("Escolha uma opção válida.");
             }
 
-            switch (escolha)
+            switch ((Opcoes)escolha)
             {
-                case 1:
+                case Opcoes.CadastrarUsuario:
                     Console.WriteLine("Digite o nome do usuário");
                     string nomeUsuario = Console.ReadLine();
                     Usuario user = new Usuario(nomeUsuario);
                     biblioteca.AdicionarUsuario(user);
                     Console.ReadLine();
                     break;
-                case 2:
+                case Opcoes.CadastrarLivro:
                     Console.WriteLine("Digite os dados do livro:");
                     Console.WriteLine("Autor:");
                     string autor = Console.ReadLine();
@@ -55,7 +67,7 @@ internal class UserInterface
                     biblioteca.AdicionarLivro(livro);
                     Console.ReadLine();
                     break;
-                case 3:
+                case Opcoes.EmprestarLivro:
 
                     Console.WriteLine("Lista de Livros Disponíveis:");
                     ListarLivros(biblioteca.ObterLivrosDisponiveis());
@@ -76,7 +88,7 @@ internal class UserInterface
                     Console.ReadLine();
                     break;
 
-                case 4:
+                case Opcoes.DevolverLivro:
                     Console.WriteLine("Lista de Livros Disponíveis:");
                     ListarLivros(biblioteca.ObterLivrosDisponiveis());
 
@@ -95,7 +107,7 @@ internal class UserInterface
                     biblioteca.DevolverLivro(usuarioEscolhido, livroEscolhido);
                     Console.ReadLine();
                     break;
-                case 5:
+                case Opcoes.ListarUsuarios:
                     Console.WriteLine("Lista de Usuários:");
                     foreach (var usuario in biblioteca.Usuarios)
                     {
@@ -108,7 +120,7 @@ internal class UserInterface
                     }
                     Console.ReadLine();
                     break;
-                case 6:
+                case Opcoes.ListarLivros:
                     Console.WriteLine("Lista de livros:");
                     foreach (var livros in biblioteca.LivrosDisponiveis)
                     {
@@ -116,11 +128,11 @@ internal class UserInterface
                     }
                     Console.ReadLine();
                     break;
-                case 0:
+                case Opcoes.Sair:
                     Console.WriteLine("Encerrando o programa.");
                     break;
             }
-        } while (escolha != 0);
+        } while ((Opcoes)escolha != Opcoes.Sair);
 
     }
 
