@@ -10,11 +10,6 @@ internal class Program
 
     {
 
-        using (var dbContext = new BibliotecaContext())
-        {
-            dbContext.Database.EnsureCreated();
-        }
-
         UserInterface ui = new UserInterface(new BibliotecaContext());
         ui.ExibirMenu();
 
