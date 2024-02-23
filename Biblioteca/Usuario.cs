@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,31 +11,37 @@ namespace Biblioteca
     {
         public int Id {  get; set; }
         public string NomeUsuario { get; private set; }
-        public List<Livro> LivrosEmprestados { get; set; }
 
-        // Construtor obriga informar o nome do usuário no momento do cadastro.
-        public Usuario(string nomeUsuario)
+        public Usuario()
         {
-            NomeUsuario = nomeUsuario;
-            LivrosEmprestados = new List<Livro>();
         }
 
-        // Método para adicionar livro emprestado
-        public void AdicionarLivroEmprestado(Livro livro)
+        public Usuario(string nome)
         {
-            LivrosEmprestados.Add(livro);
+            NomeUsuario = nome;
         }
 
-        // Método para remover livro emprestado
-        public void RemoverLivroEmprestado(Livro livro)
+        public List<Usuario> ListarUsuarios()
         {
-            LivrosEmprestados.Remove(livro);
+            using (var context = new BibliotecaContext())
+            {
+                var item = context.Usuarios.ToList();
+                return item;
+            }
+
         }
 
-        // Método para obter a lista de livros emprestados
-        public List<Livro> ObterLivrosEmprestados()
+        public string CadastrarUsuario(string nome)
         {
-            return LivrosEmprestados;
+            using (var context = new BibliotecaContext())
+            {
+                Usuario novoUsuario = new Usuario(nome);
+                context.Usuarios.Add(novoUsuario);
+                context.SaveChanges();
+
+                return "Usuário cadastrado com sucesso.";
+            }
         }
+
     }
 }
