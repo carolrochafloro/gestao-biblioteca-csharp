@@ -11,29 +11,48 @@ namespace Biblioteca
         public string Titulo { get; set; }
         public int Paginas { get; set; }
 
-        public bool Emprestado = false;
+        public bool Emprestado;
 
-        // Propriedade de navegação para os empréstimos associados a este livro
-        public List<Emprestimos> Emprestimos { get; set; }
 
-        // Construtor sem parâmetros necessário para o Entity Framework
+
         public Livro()
         {
         }
 
-        // Construtor obriga a inserção de todos os atributos ao cadastrar um novo livro
         public Livro(string autor, string titulo, int paginas)
         {
+
             Autor = autor;
             Titulo = titulo;
             Paginas = paginas;
-            Emprestimos = new List<Emprestimos>();
+            Emprestado = false;
+
         }
 
-        // Método para verificar se o livro está emprestado
-        public bool EstaEmprestado()
+        public List<Livro> ListarLivros()
         {
-            return Emprestado;
+            using (var context = new BibliotecaContext())
+            {
+
+                var item = context.Livros.ToList();
+                return item;
+
+            }
         }
+
+        public string CadastrarLivro(string autor, string titulo, int paginas)
+        {
+            using (var context = new BibliotecaContext())
+            {
+
+                Livro novoLivro = new Livro(autor, titulo, paginas);
+                context.Livros.Add(novoLivro);
+                context.SaveChanges();
+
+                return "Livro cadastrado com sucesso.";
+
+            }
+        }
+
     }
 }
