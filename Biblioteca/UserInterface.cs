@@ -25,6 +25,7 @@ namespace Biblioteca
             DevolverLivro = 4,
             ListarUsuarios = 5,
             ListarLivros = 6,
+            ListarEmprestimos = 7,
             Sair = 0,
         }
 
@@ -42,6 +43,7 @@ namespace Biblioteca
                 Console.WriteLine("\t4 - Devolver livro");
                 Console.WriteLine("\t5 - Listar usuários");
                 Console.WriteLine("\t6 - Listar livros");
+                Console.WriteLine("\t7 - Listar Empréstimos");
                 Console.WriteLine("\t0 - Sair");
 
                 escolha = LerDados();
@@ -79,16 +81,37 @@ namespace Biblioteca
                         Console.ReadLine();
                         break;
                     case Opcoes.EmprestarLivro:
-                       
+
+                        Console.WriteLine("Selecione o id do livro:");
+                        var resultadoLivros = livro.ListarLivros();
+                        foreach (var item in resultadoLivros)
+                        {
+                            Console.WriteLine($"Dados do livro: Id: {item.Id}, Título: {item.ToString}, Autor: {item.Autor}. \nEmprestado: {item.Emprestado}");
+                        }
+                        int idLivro = int.Parse(Console.ReadLine());
+
+                        Console.WriteLine("Selecione o id do usuário:");
+                        var resultadoUsuarios = usuario.ListarUsuarios();
+                        foreach (var item in resultadoUsuarios)
+                        {
+                            Console.WriteLine($"Id: {item.Id} \n Nome: {item.NomeUsuario}");
+                        }
+                        int idUsuario = int.Parse(Console.ReadLine());
+
+                        var emprestimoFeito = emprestimo.NovoEmprestimo(idUsuario, idLivro);
+                        Console.WriteLine(emprestimoFeito);
+
+                        Console.ReadLine();
                         break;
                     case Opcoes.DevolverLivro:
-                       
-                        break;
+                     
+
+
                     case Opcoes.ListarUsuarios:
 
-                        var resultadoUsuarios = usuario.ListarUsuarios();
+                        var resultadoUsuario = usuario.ListarUsuarios();
 
-                        foreach (var item in resultadoUsuarios)
+                        foreach (var item in resultadoUsuario)
                         {
                             Console.WriteLine($"Id: {item.Id} \n Nome: {item.NomeUsuario}");
                         }
@@ -98,15 +121,24 @@ namespace Biblioteca
 
                     case Opcoes.ListarLivros:
 
-                        var resultadoLivros = livro.ListarLivros();
-                        foreach (var item in resultadoLivros)
+                        var resultadoLivro = livro.ListarLivros();
+                        foreach (var item in resultadoLivro)
                         {
                             Console.WriteLine($"Dados do livro: Título: {item.Titulo}, Autor: {item.Autor}, Páginas: {item.Paginas}. \nEmprestado: {item.Emprestado}");
                         }
 
                         Console.ReadLine();
                         break;
+                    case Opcoes.ListarEmprestimos:
+                        var resultadoemprestimo = emprestimo.ListarEmprestimos();
 
+                        foreach (var item in resultadoemprestimo)
+                        {
+                            Console.WriteLine($"{item.Id}, {item.UsuarioId}, {item.LivroId}, {item.DataEmprestimo}");
+                        }
+
+                        Console.ReadLine();
+                        break;
                     case Opcoes.Sair:
 
                         break;
