@@ -10,13 +10,13 @@ namespace Biblioteca
         public string Autor { get; set; }
         public string Titulo { get; set; }
         public int Paginas { get; set; }
-
-        public bool Emprestado;
+        public bool? Emprestado {  get; set; }
 
 
 
         public Livro()
         {
+            Emprestado = false;
         }
 
         public Livro(string autor, string titulo, int paginas)

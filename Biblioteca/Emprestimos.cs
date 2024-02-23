@@ -34,7 +34,7 @@ internal class Emprestimos
                 return "Livro não encontrado.";
             }
 
-            if (livro.Emprestado)
+            if (livro.Emprestado == true)
             {
                 return "Livro já emprestado.";
             }

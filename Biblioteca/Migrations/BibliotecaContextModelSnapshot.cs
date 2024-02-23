@@ -57,6 +57,9 @@ namespace Biblioteca.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<bool?>("Emprestado")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Paginas")
                         .HasColumnType("INTEGER");
 
@@ -87,7 +90,7 @@ namespace Biblioteca.Migrations
             modelBuilder.Entity("Biblioteca.Emprestimos", b =>
                 {
                     b.HasOne("Biblioteca.Livro", "Livro")
-                        .WithMany("Emprestimos")
+                        .WithMany()
                         .HasForeignKey("LivroId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -101,11 +104,6 @@ namespace Biblioteca.Migrations
                     b.Navigation("Livro");
 
                     b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("Biblioteca.Livro", b =>
-                {
-                    b.Navigation("Emprestimos");
                 });
 #pragma warning restore 612, 618
         }

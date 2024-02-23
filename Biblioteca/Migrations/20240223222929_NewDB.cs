@@ -6,11 +6,27 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Biblioteca.Migrations
 {
     /// <inheritdoc />
-    public partial class PrimeiraMigration : Migration
+    public partial class NewDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Livros",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Autor = table.Column<string>(type: "TEXT", nullable: false),
+                    Titulo = table.Column<string>(type: "TEXT", nullable: false),
+                    Paginas = table.Column<int>(type: "INTEGER", nullable: false),
+                    Emprestado = table.Column<bool>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Livros", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Usuarios",
                 columns: table => new
@@ -22,27 +38,6 @@ namespace Biblioteca.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Usuarios", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Livros",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Autor = table.Column<string>(type: "TEXT", nullable: false),
-                    Titulo = table.Column<string>(type: "TEXT", nullable: false),
-                    Paginas = table.Column<int>(type: "INTEGER", nullable: false),
-                    UsuarioId = table.Column<int>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Livros", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Livros_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
-                        principalTable: "Usuarios",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -82,11 +77,6 @@ namespace Biblioteca.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Emprestimos_UsuarioId",
                 table: "Emprestimos",
-                column: "UsuarioId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Livros_UsuarioId",
-                table: "Livros",
                 column: "UsuarioId");
         }
 
