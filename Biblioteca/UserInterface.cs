@@ -7,14 +7,15 @@ namespace Biblioteca
     internal class UserInterface
     {
         private readonly BibliotecaContext dbContext;
-        public Biblioteca biblioteca;
 
         public UserInterface(BibliotecaContext dbContext)
         {
             this.dbContext = dbContext;
-            this.biblioteca = new Biblioteca(dbContext);
-
         }
+
+        Livro livro = new Livro();
+        Usuario usuario = new Usuario();
+        Emprestimos emprestimo = new Emprestimos();
 
         public enum Opcoes
         {
@@ -33,15 +34,15 @@ namespace Biblioteca
 
             do
             {
-                Console.WriteLine($"Seja bem vindo à {biblioteca.Nome}");
-                Console.WriteLine("Escolha uma opção:");
-                Console.WriteLine("1 - Cadastrar usuário");
-                Console.WriteLine("2 - Cadastrar livro");
-                Console.WriteLine("3 - Emprestar livro");
-                Console.WriteLine("4 - Devolver livro");
-                Console.WriteLine("5 - Listar usuários");
-                Console.WriteLine("6 - Listar livros");
-                Console.WriteLine("0 - Sair");
+                Console.WriteLine($"Seja bem vindo à Biblioteca!\n");
+                Console.WriteLine("Escolha uma opção:\n");
+                Console.WriteLine("\t1 - Cadastrar usuário");
+                Console.WriteLine("\t2 - Cadastrar livro");
+                Console.WriteLine("\t3 - Emprestar livro");
+                Console.WriteLine("\t4 - Devolver livro");
+                Console.WriteLine("\t5 - Listar usuários");
+                Console.WriteLine("\t6 - Listar livros");
+                Console.WriteLine("\t0 - Sair");
 
                 escolha = LerDados();
 
@@ -53,56 +54,64 @@ namespace Biblioteca
                 switch ((Opcoes)escolha)
                 {
                     case Opcoes.CadastrarUsuario:
-                        Console.WriteLine("Digite o nome do usuário");
+
+                        Console.WriteLine("Digite o nome do usuário:");
                         string nomeUsuario = Console.ReadLine();
-                        Usuario user = new Usuario(nomeUsuario);
-                        dbContext.Usuarios.Add(user);
-                        dbContext.SaveChanges();
+                        string novoUsuario = usuario.CadastrarUsuario(nomeUsuario);
+
+                        Console.WriteLine(novoUsuario);
                         Console.ReadLine();
                         break;
+
                     case Opcoes.CadastrarLivro:
-                        Console.WriteLine("Digite os dados do livro:");
-                        Console.WriteLine("Autor:");
-                        string autor = Console.ReadLine();
-                        Console.WriteLine("Título:");
-                        string titulo = Console.ReadLine();
-                        Console.WriteLine("Páginas:");
+                        Console.WriteLine("Digite o título do livro:");
+                        string nomeLivro = Console.ReadLine();
+
+                        Console.WriteLine("Digite o autor do livro:");
+                        string autorLivro = Console.ReadLine();
+
+                        Console.WriteLine("Digite o número de páginas");
                         int paginas = int.Parse(Console.ReadLine());
-                        Livro livro = new Livro(autor, titulo, paginas);
-                        dbContext.Livros.Add(livro);
-                        dbContext.SaveChanges();
+
+                        string novoLivro = livro.CadastrarLivro(nomeLivro, autorLivro, paginas);
+
+                        Console.WriteLine(novoLivro);
                         Console.ReadLine();
                         break;
                     case Opcoes.EmprestarLivro:
-                        // ... restante do código
+                       
                         break;
                     case Opcoes.DevolverLivro:
-                        // ... restante do código
+                       
                         break;
                     case Opcoes.ListarUsuarios:
-                        Console.WriteLine("Lista de Usuários:");
-                        foreach (var usuario in dbContext.Usuarios.Include(u => u.LivrosEmprestados))
+
+                        var resultadoUsuarios = usuario.ListarUsuarios();
+
+                        foreach (var item in resultadoUsuarios)
                         {
-                            Console.WriteLine($"Nome do Usuário: {usuario.NomeUsuario}");
-                            foreach (var item in usuario.LivrosEmprestados)
-                            {
-                                Console.WriteLine($"Livros emprestados: {item.Titulo}");
-                            }
+                            Console.WriteLine($"Id: {item.Id} \n Nome: {item.NomeUsuario}");
                         }
+
                         Console.ReadLine();
                         break;
+
                     case Opcoes.ListarLivros:
-                        Console.WriteLine("Lista de livros:");
-                        foreach (var item in dbContext.Livros)
+
+                        var resultadoLivros = livro.ListarLivros();
+                        foreach (var item in resultadoLivros)
                         {
-                            Console.WriteLine($"Dados do livro: Título: {item.Titulo}, Autor: {item.Autor}, Páginas: {item.Paginas}");
+                            Console.WriteLine($"Dados do livro: Título: {item.Titulo}, Autor: {item.Autor}, Páginas: {item.Paginas}. \nEmprestado: {item.Emprestado}");
                         }
+
                         Console.ReadLine();
                         break;
+
                     case Opcoes.Sair:
-                        Console.WriteLine("Encerrando o programa.");
+
                         break;
                 }
+
             } while ((Opcoes)escolha != Opcoes.Sair);
         }
 
@@ -116,5 +125,10 @@ namespace Biblioteca
 
             return resultado;
         }
+
+       
+
+        
+
     }
 }
