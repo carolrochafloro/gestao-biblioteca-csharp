@@ -18,6 +18,8 @@ internal class Emprestimos
     public Usuario Usuario { get; set; }
     public Livro Livro { get; set; }
 
+    
+
     public Emprestimos()
     {
     }
@@ -56,12 +58,36 @@ internal class Emprestimos
         }
     }
 
-    public List<Emprestimos> ListarEmprestimos()
+    public string DevolverLivro(int idEmprestimo)
     {
         using (var context = new BibliotecaContext())
         {
-            var item = context.Emprestimos.ToList();
+            var emprestimo = context.Emprestimos.Find(idEmprestimo); 
+            
+            emprestimo.Ativo = false;
+            emprestimo.DataDevolucao = DateTime.Today;
+;
+            context.Emprestimos.Update(emprestimo);
+            context.SaveChanges();
+
+            return "Livro devolvido.";
+        }
+       
+    }
+
+    public List<Emprestimos> ListarEmprestimos(int? idUsuario = null)
+    {
+        using (var context = new BibliotecaContext())
+        {
+            if (idUsuario == null)
+            {
+                var listaTotal = context.Emprestimos.ToList();
+                return listaTotal;
+            }
+
+            var item = context.Emprestimos.Where(id => UsuarioId == idUsuario).ToList();
             return item;
+
         }
     }
 }

@@ -104,12 +104,33 @@ namespace Biblioteca
                         Console.ReadLine();
                         break;
                     case Opcoes.DevolverLivro:
-                     
 
+                        Console.WriteLine("Selecione o id do usuário");
+                        var resultadoUsuario = usuario.ListarUsuarios();
+                        foreach (var item in resultadoUsuario)
+                        {
+                            Console.WriteLine($"Id: {item.Id} \n Nome: {item.NomeUsuario}");
+                        }
+                        idUsuario = int.Parse(Console.ReadLine());
+
+                        var emprestimosUsuario = emprestimo.ListarEmprestimos(idUsuario);
+                        Console.WriteLine("Selecione o id do registro de empréstimo:");
+                        foreach (var item in emprestimosUsuario)
+                        {
+                            Console.WriteLine($"Id: {item.Id} \n Data: {item.DataEmprestimo}");
+                        }
+                        int idEmprestimo = int.Parse(Console.ReadLine());
+
+                        var livroDevolvido = emprestimo.DevolverLivro(idEmprestimo);
+
+                        Console.WriteLine(livroDevolvido);
+
+                        Console.ReadLine();
+                        break;
 
                     case Opcoes.ListarUsuarios:
 
-                        var resultadoUsuario = usuario.ListarUsuarios();
+                        resultadoUsuario = usuario.ListarUsuarios();
 
                         foreach (var item in resultadoUsuario)
                         {

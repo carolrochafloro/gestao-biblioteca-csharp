@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biblioteca.Migrations
 {
     [DbContext(typeof(BibliotecaContext))]
-    [Migration("20240223222929_NewDB")]
+    [Migration("20240224212708_NewDB")]
     partial class NewDB
     {
         /// <inheritdoc />

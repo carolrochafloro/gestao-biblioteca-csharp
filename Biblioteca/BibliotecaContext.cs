@@ -9,7 +9,8 @@ namespace Biblioteca
 {
     internal class BibliotecaContext : DbContext
     {
-        public string SQLiteConnection = "Data Source=MinhaBiblioteca.db;";
+        public string SQLiteConnection = "Data Source=MinhaBiblioteca.db";
+
         public DbSet<Livro> Livros { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Emprestimos> Emprestimos { get; set; }
