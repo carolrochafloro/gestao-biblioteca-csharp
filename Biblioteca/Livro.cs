@@ -1,40 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.SQLite;
-using System.Security.Policy;
+using static Biblioteca.Emprestimos;
 
-namespace Biblioteca;
-internal class Livro
+namespace Biblioteca
 {
-
-    public string Autor { get; set; }
-    public string Titulo {  get; set; }
-    public int Paginas { get; set; }
-
-    public bool Emprestado = false;
-
-
-    //Construtor obriga a inserção de todos os atributos ao cadastrar um novo livro e inicia o atributo "emprestado" como falso.
-
-    public Livro(string autor, string titulo, int paginas)
+    internal class Livro
     {
-        Autor = autor;
-        Titulo = titulo;
-        Paginas = paginas;
-        Emprestado = false;
-    }
+        public int Id { get; set; }
+        public string Autor { get; set; }
+        public string Titulo { get; set; }
+        public int Paginas { get; set; }
+        public bool? Emprestado {  get; set; }
 
-    //getter para informar se o livro está emprestado
 
-    public bool EstaEmprestado()
-    {
-        return Emprestado;
+
+        public Livro()
+        {
+            Emprestado = false;
+        }
+
+        public Livro(string autor, string titulo, int paginas)
+        {
+
+            Autor = autor;
+            Titulo = titulo;
+            Paginas = paginas;
+            Emprestado = false;
+
+        }
+
+        public List<Livro> ListarLivros()
+        {
+            using (var context = new BibliotecaContext())
+            {
+
+                var item = context.Livros.ToList();
+                return item;
+
+            }
+        }
+
+        public string CadastrarLivro(string autor, string titulo, int paginas)
+        {
+            using (var context = new BibliotecaContext())
+            {
+
+                Livro novoLivro = new Livro(autor, titulo, paginas);
+                context.Livros.Add(novoLivro);
+                context.SaveChanges();
+
+                return "Livro cadastrado com sucesso.";
+
+            }
+        }
+
     }
- 
 }
-
-
-

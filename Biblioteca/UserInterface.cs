@@ -1,155 +1,187 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
-namespace Biblioteca;
-internal class UserInterface
+namespace Biblioteca
 {
-
-    public Biblioteca biblioteca = new Biblioteca();
-
-    public void ExibirMenu()
+    internal class UserInterface
     {
-        int escolha = 1;
-        do
+        private readonly BibliotecaContext dbContext;
+
+        public UserInterface(BibliotecaContext dbContext)
         {
-            Console.WriteLine($"Seja bem vindo à {biblioteca.Nome}");
-            Console.WriteLine("Escolha uma opção:");
-            Console.WriteLine("\n 1 - Cadastrar usuário");
-            Console.WriteLine("\n 2 - Cadastrar livro");
-            Console.WriteLine("\n 3 - Emprestar livro");
-            Console.WriteLine("\n 4 - Devolver livro");
-            Console.WriteLine("\n 5 - Listar usuários");
-            Console.WriteLine("\n 6 - Listar livros");
-            Console.WriteLine("\n 0 - Sair");
+            this.dbContext = dbContext;
+        }
 
-            escolha = LerDados();
+        Livro livro = new Livro();
+        Usuario usuario = new Usuario();
+        Emprestimos emprestimo = new Emprestimos();
 
-            if (escolha != 1 && escolha != 2 && escolha != 3 && escolha != 4 && escolha != 5 && escolha != 6 && escolha != 0)
+        public enum Opcoes
+        {
+            CadastrarUsuario = 1,
+            CadastrarLivro = 2,
+            EmprestarLivro = 3,
+            DevolverLivro = 4,
+            ListarUsuarios = 5,
+            ListarLivros = 6,
+            ListarEmprestimos = 7,
+            Sair = 0,
+        }
+
+        public void ExibirMenu()
+        {
+            int escolha;
+
+            do
             {
-                Console.WriteLine("Escolha uma opção válida.");
-            }
+                Console.WriteLine($"Seja bem vindo à Biblioteca!\n");
+                Console.WriteLine("Escolha uma opção:\n");
+                Console.WriteLine("\t1 - Cadastrar usuário");
+                Console.WriteLine("\t2 - Cadastrar livro");
+                Console.WriteLine("\t3 - Emprestar livro");
+                Console.WriteLine("\t4 - Devolver livro");
+                Console.WriteLine("\t5 - Listar usuários");
+                Console.WriteLine("\t6 - Listar livros");
+                Console.WriteLine("\t7 - Listar Empréstimos");
+                Console.WriteLine("\t0 - Sair");
 
-            switch (escolha)
-            {
-                case 1:
-                    Console.WriteLine("Digite o nome do usuário");
-                    string nomeUsuario = Console.ReadLine();
-                    Usuario user = new Usuario(nomeUsuario);
-                    biblioteca.AdicionarUsuario(user);
-                    Console.ReadLine();
-                    break;
-                case 2:
-                    Console.WriteLine("Digite os dados do livro:");
-                    Console.WriteLine("Autor:");
-                    string autor = Console.ReadLine();
-                    Console.WriteLine("Título:");
-                    string titulo = Console.ReadLine();
-                    Console.WriteLine("Páginas:");
-                    int paginas = int.Parse(Console.ReadLine());
-                    Livro livro = new Livro(autor, titulo, paginas);
-                    biblioteca.AdicionarLivro(livro);
-                    Console.ReadLine();
-                    break;
-                case 3:
+                escolha = LerDados();
 
-                    Console.WriteLine("Lista de Livros Disponíveis:");
-                    ListarLivros(biblioteca.ObterLivrosDisponiveis());
+                if (!Enum.IsDefined(typeof(Opcoes), escolha))
+                {
+                    Console.WriteLine("Escolha uma opção válida.");
+                }
 
-                    Console.WriteLine("Escolha o número do livro que deseja emprestar:");
-                    int indiceLivro = LerDados();
+                switch ((Opcoes)escolha)
+                {
+                    case Opcoes.CadastrarUsuario:
 
-                    Console.WriteLine("Lista de Usuários:");
-                    ListarUsuarios(biblioteca.ObterUsuarios());
+                        Console.WriteLine("Digite o nome do usuário:");
+                        string nomeUsuario = Console.ReadLine();
+                        string novoUsuario = usuario.CadastrarUsuario(nomeUsuario);
 
-                    Console.WriteLine("Escolha o número do usuário para quem deseja emprestar o livro:");
-                    int indiceUsuario = LerDados();
+                        Console.WriteLine(novoUsuario);
+                        Console.ReadLine();
+                        break;
 
-                    Livro livroEscolhido = biblioteca.ObterLivrosDisponiveis()[indiceLivro];
-                    Usuario usuarioEscolhido = biblioteca.ObterUsuarios()[indiceUsuario];
+                    case Opcoes.CadastrarLivro:
+                        Console.WriteLine("Digite o título do livro:");
+                        string nomeLivro = Console.ReadLine();
 
-                    biblioteca.EmprestarLivro(usuarioEscolhido, livroEscolhido);
-                    Console.ReadLine();
-                    break;
+                        Console.WriteLine("Digite o autor do livro:");
+                        string autorLivro = Console.ReadLine();
 
-                case 4:
-                    Console.WriteLine("Lista de Livros Disponíveis:");
-                    ListarLivros(biblioteca.ObterLivrosDisponiveis());
+                        Console.WriteLine("Digite o número de páginas");
+                        int paginas = int.Parse(Console.ReadLine());
 
-                    Console.WriteLine("Escolha o número do livro que deseja emprestar:");
-                    indiceLivro = LerDados();
+                        string novoLivro = livro.CadastrarLivro(nomeLivro, autorLivro, paginas);
 
-                    Console.WriteLine("Lista de Usuários:");
-                    ListarUsuarios(biblioteca.ObterUsuarios());
+                        Console.WriteLine(novoLivro);
+                        Console.ReadLine();
+                        break;
+                    case Opcoes.EmprestarLivro:
 
-                    Console.WriteLine("Escolha o número do usuário para quem deseja emprestar o livro:");
-                    indiceUsuario = LerDados();
-
-                    livroEscolhido = biblioteca.ObterLivrosDisponiveis()[indiceLivro];
-                    usuarioEscolhido = biblioteca.ObterUsuarios()[indiceUsuario];
-
-                    biblioteca.DevolverLivro(usuarioEscolhido, livroEscolhido);
-                    Console.ReadLine();
-                    break;
-                case 5:
-                    Console.WriteLine("Lista de Usuários:");
-                    foreach (var usuario in biblioteca.Usuarios)
-                    {
-                        Console.WriteLine($"Nome do Usuário: {usuario.NomeUsuario}");
-                        foreach (var item in usuario.LivrosEmprestados)
+                        Console.WriteLine("Selecione o id do livro:");
+                        var resultadoLivros = livro.ListarLivros();
+                        foreach (var item in resultadoLivros)
                         {
-                            Console.WriteLine($"Livros emprestados: {item.Titulo}");
+                            Console.WriteLine($"Dados do livro: Id: {item.Id}, Título: {item.ToString}, Autor: {item.Autor}. \nEmprestado: {item.Emprestado}");
+                        }
+                        int idLivro = int.Parse(Console.ReadLine());
+
+                        Console.WriteLine("Selecione o id do usuário:");
+                        var resultadoUsuarios = usuario.ListarUsuarios();
+                        foreach (var item in resultadoUsuarios)
+                        {
+                            Console.WriteLine($"Id: {item.Id} \n Nome: {item.NomeUsuario}");
+                        }
+                        int idUsuario = int.Parse(Console.ReadLine());
+
+                        var emprestimoFeito = emprestimo.NovoEmprestimo(idUsuario, idLivro);
+                        Console.WriteLine(emprestimoFeito);
+
+                        Console.ReadLine();
+                        break;
+                    case Opcoes.DevolverLivro:
+
+                        Console.WriteLine("Selecione o id do usuário");
+                        var resultadoUsuario = usuario.ListarUsuarios();
+                        foreach (var item in resultadoUsuario)
+                        {
+                            Console.WriteLine($"Id: {item.Id} \n Nome: {item.NomeUsuario}");
+                        }
+                        idUsuario = int.Parse(Console.ReadLine());
+
+                        var emprestimosUsuario = emprestimo.ListarEmprestimos(idUsuario);
+                        Console.WriteLine("Selecione o id do registro de empréstimo:");
+                        foreach (var item in emprestimosUsuario)
+                        {
+                            Console.WriteLine($"Id: {item.Id} \n Data: {item.DataEmprestimo}");
+                        }
+                        int idEmprestimo = int.Parse(Console.ReadLine());
+
+                        var livroDevolvido = emprestimo.DevolverLivro(idEmprestimo);
+
+                        Console.WriteLine(livroDevolvido);
+
+                        Console.ReadLine();
+                        break;
+
+                    case Opcoes.ListarUsuarios:
+
+                        resultadoUsuario = usuario.ListarUsuarios();
+
+                        foreach (var item in resultadoUsuario)
+                        {
+                            Console.WriteLine($"Id: {item.Id} \n Nome: {item.NomeUsuario}");
                         }
 
-                    }
-                    Console.ReadLine();
-                    break;
-                case 6:
-                    Console.WriteLine("Lista de livros:");
-                    foreach (var livros in biblioteca.LivrosDisponiveis)
-                    {
-                        Console.WriteLine($"Dados do livro: Título: \n{livros.Titulo}.\n Autor: {livros.Autor}.\n Páginas: {livros.Paginas}");
-                    }
-                    Console.ReadLine();
-                    break;
-                case 0:
-                    Console.WriteLine("Encerrando o programa.");
-                    break;
+                        Console.ReadLine();
+                        break;
+
+                    case Opcoes.ListarLivros:
+
+                        var resultadoLivro = livro.ListarLivros();
+                        foreach (var item in resultadoLivro)
+                        {
+                            Console.WriteLine($"Dados do livro: Título: {item.Titulo}, Autor: {item.Autor}, Páginas: {item.Paginas}. \nEmprestado: {item.Emprestado}");
+                        }
+
+                        Console.ReadLine();
+                        break;
+                    case Opcoes.ListarEmprestimos:
+                        var resultadoemprestimo = emprestimo.ListarEmprestimos();
+
+                        foreach (var item in resultadoemprestimo)
+                        {
+                            Console.WriteLine($"{item.Id}, {item.UsuarioId}, {item.LivroId}, {item.DataEmprestimo}");
+                        }
+
+                        Console.ReadLine();
+                        break;
+                    case Opcoes.Sair:
+
+                        break;
+                }
+
+            } while ((Opcoes)escolha != Opcoes.Sair);
+        }
+
+        private int LerDados()
+        {
+            int resultado;
+            while (!int.TryParse(Console.ReadLine(), out resultado))
+            {
+                Console.WriteLine("Entrada inválida. Por favor, escolha uma das opções acima.");
             }
-        } while (escolha != 0);
 
-    }
-
-    private int LerDados()
-    {
-        int resultado;
-        while (!int.TryParse(Console.ReadLine(), out resultado))
-        {
-            Console.WriteLine("Entrada inválida. Por favor, escolha uma das opções acima.");
+            return resultado;
         }
 
-        return resultado;
+       
 
-    }
+        
 
-    private void ListarLivros(List<Livro> livros)
-    {
-        for (int i = 0; i < livros.Count; i++)
-        {
-            Console.WriteLine($"{i} - Título: {livros[i].Titulo}, Autor: {livros[i].Autor}");
-        }
-    }
-
-    private void ListarUsuarios(List<Usuario> usuarios)
-    {
-        for (int i = 0; i < usuarios.Count; i++)
-        {
-            Console.WriteLine($"{i} - Nome do Usuário: {usuarios[i].NomeUsuario}");
-        }
     }
 }
-
