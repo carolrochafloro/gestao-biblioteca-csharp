@@ -17,7 +17,7 @@ Projeto desenvolvido para a prática dos conceitos de orientação a objetos em 
 - Tem um id
 - Tem um autor
 - Tem um título
-- Ten um número de páginas
+- Tem um número de páginas
 - Tem um status de emprestado (true or false)
 
 ###### Métodos
