@@ -77,7 +77,6 @@ internal class Emprestimos
     {
         using (var context = new BibliotecaContext())
         {
-
             var emprestimos = context.Emprestimos.AsEnumerable();
             var usuarios = context.Usuarios.AsEnumerable();
             var livros = context.Livros.AsEnumerable();
@@ -88,14 +87,18 @@ internal class Emprestimos
                         select new
                         {
                             NomeUsuario = usuario.NomeUsuario,
+                            UsuarioId = emprestimo.UsuarioId,
                             LivroTitulo = livro.Titulo,
                             IdEmprestimo = emprestimo.Id,
                             DataEmprestimo = emprestimo.DataEmprestimo
                         };
 
+            if (idUsuario != null)
+            {
+                query = query.Where(e => e.UsuarioId == idUsuario);
+            }
 
             return query.ToList<dynamic>();
-
         }
     }
 }
