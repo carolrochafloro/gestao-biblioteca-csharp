@@ -155,7 +155,7 @@ namespace Biblioteca
 
                         foreach (var item in resultadoemprestimo)
                         {
-                            Console.WriteLine($"{item.Id}, {item.UsuarioId}, {item.LivroId}, {item.DataEmprestimo}");
+                            Console.WriteLine($"{item.IdEmprestimo}, {item.NomeUsuario}, {item.LivroTitulo}");
                         }
 
                         Console.ReadLine();

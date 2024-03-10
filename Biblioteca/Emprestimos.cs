@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,10 +16,7 @@ internal class Emprestimos
     public DateTime DataEmprestimo { get; set; }
     public DateTime? DataDevolucao { get; set; }
 
-    public Usuario Usuario { get; set; }
-    public Livro Livro { get; set; }
 
-    
 
     public Emprestimos()
     {
@@ -62,33 +60,45 @@ internal class Emprestimos
     {
         using (var context = new BibliotecaContext())
         {
-            var emprestimo = context.Emprestimos.Find(idEmprestimo); 
-            
+            var emprestimo = context.Emprestimos.Find(idEmprestimo);
+
             emprestimo.Ativo = false;
             emprestimo.DataDevolucao = DateTime.Today;
-;
+            ;
             context.Emprestimos.Update(emprestimo);
             context.SaveChanges();
 
             return "Livro devolvido.";
         }
-       
+
     }
 
-    public List<Emprestimos> ListarEmprestimos(int? idUsuario = null)
+    public List<dynamic> ListarEmprestimos(int? idUsuario = null)
     {
         using (var context = new BibliotecaContext())
         {
-            if (idUsuario == null)
-            {
-                var listaTotal = context.Emprestimos.ToList();
-                return listaTotal;
-            }
 
-            var item = context.Emprestimos.Where(id => UsuarioId == idUsuario).ToList();
-            return item;
+            var emprestimos = context.Emprestimos.AsEnumerable();
+            var usuarios = context.Usuarios.AsEnumerable();
+            var livros = context.Livros.AsEnumerable();
+
+            var query = from emprestimo in emprestimos
+                        join usuario in usuarios on emprestimo.UsuarioId equals usuario.Id
+                        join livro in livros on emprestimo.LivroId equals livro.Id
+                        select new
+                        {
+                            NomeUsuario = usuario.NomeUsuario,
+                            LivroTitulo = livro.Titulo,
+                            IdEmprestimo = emprestimo.Id,
+                            DataEmprestimo = emprestimo.DataEmprestimo
+                        };
+
+
+            return query.ToList<dynamic>();
 
         }
     }
 }
+
+
 
