@@ -1,6 +1,6 @@
 # Console app de gestão de biblioteca
 
-Projeto desenvolvido para a prática dos conceitos de orientação a objetos em C# com .NET Entity Framework Core
+Projeto desenvolvido para a prática dos conceitos de orientação a objetos em C# com .NET e Entity Framework Core
 
 ## Modelagem
 
