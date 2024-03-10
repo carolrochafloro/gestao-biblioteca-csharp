@@ -90,7 +90,9 @@ internal class Emprestimos
                             UsuarioId = emprestimo.UsuarioId,
                             LivroTitulo = livro.Titulo,
                             IdEmprestimo = emprestimo.Id,
-                            DataEmprestimo = emprestimo.DataEmprestimo
+                            DataEmprestimo = emprestimo.DataEmprestimo,
+                            DataDevolucao = emprestimo.DataDevolucao,
+                            Ativo = emprestimo.Ativo
                         };
 
             if (idUsuario != null)
