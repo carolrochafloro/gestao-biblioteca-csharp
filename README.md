@@ -1,17 +1,8 @@
 # Console app de gestão de biblioteca
 
-Projeto desenvolvido para a prática dos conceitos de orientação a objetos em C#.
+Projeto desenvolvido para a prática dos conceitos de orientação a objetos em C# com .NET Entity Framework Core
 
 ## Modelagem
-#### Biblioteca
-- Tem 0, N usuários
-- Tem 0, N livros
-
-###### Métodos
-- Listar livros
-- Listar usuários
-- Emprestar livro - cria linha na tabela empréstimos
-- Devolver livro - altera status na tabela empréstimos e no livro
 
 #### Usuário
 - Tem um id
@@ -26,8 +17,8 @@ Projeto desenvolvido para a prática dos conceitos de orientação a objetos em 
 - Tem um id
 - Tem um autor
 - Tem um título
+- Ten um número de páginas
 - Tem um status de emprestado (true or false)
-- Tem 1 empréstimo ativo por vez
 
 ###### Métodos
 - Cadastrar livro
@@ -43,17 +34,17 @@ Projeto desenvolvido para a prática dos conceitos de orientação a objetos em 
 
 #### User interface
 - Menu - lógica implementada dentro de cada opção
-- LerInteiro - ler número inteiro
 
 ## Funcionalidades
-- Cadastrar usuário
-- Cadastrar livro
-- Listar todos os livros
+- Cadastrar usuário - ok
+- Cadastrar livro - ok
+- Listar todos os livros - ok
+- Listar empréstimos por usuário - ok
 - Listar livros emprestados
 - Listar livros não emprestados
-- Listar todos os usuários
-- Emprestar um livro
-- Devolver um livro
+- Listar todos os usuários - ok
+- Emprestar um livro - ok
+- Devolver um livro - ok
 - Deletar um usuário
 - Deletar um livro
 
